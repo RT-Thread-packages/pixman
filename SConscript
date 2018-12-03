@@ -7,6 +7,7 @@ import os
 PIXMAN_VERSION = '0.34.0'
 PIXMAN_PATH = 'pixman-' + PIXMAN_VERSION
 cwd = GetCurrentDir()
+LOCAL_CCFLAGS = ""
 
 # core source files 
 src = Split('''
@@ -41,6 +42,9 @@ pixman-utils.c
 pixman-x86.c
 ''')
 
+if rtconfig.CROSS_TOOL == "keil":
+    LOCAL_CCFLAGS += ' --gnu -W'
+
 for item in range(len(src)):
     src[item] = PIXMAN_PATH + '/pixman/' + src[item]
 
@@ -48,6 +52,6 @@ CPPDEFINES  = ['PIXMAN_NO_TLS', 'PACKAGE']
 
 CPPPATH = [cwd + '/' + PIXMAN_PATH + '/pixman']
 
-group = DefineGroup('pixman', src, depend = ['PKG_USING_PIXMAN'], CPPDEFINES = CPPDEFINES, CPPPATH = CPPPATH)
+group = DefineGroup('pixman', src, depend = ['PKG_USING_PIXMAN'], CPPDEFINES = CPPDEFINES, CPPPATH = CPPPATH, LOCAL_CCFLAGS = LOCAL_CCFLAGS)
 
 Return('group')
